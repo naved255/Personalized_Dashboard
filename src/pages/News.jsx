@@ -21,6 +21,7 @@ const News = () => {
             let data = await fetch(`https://gnews.io/api/v4/top-headlines?category=general&lang=en&country=us&max=10&apikey=${apiKey}`);
             
             let res = await data.json();
+            console.log(res)
             if(res.articles) {
                 setnews(res.articles);
             }
