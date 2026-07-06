@@ -15,10 +15,11 @@ const News = () => {
             
             // 1. Read the API key securely from Vite's environment variables
             const apiKey = import.meta.env.VITE_GNEWS_API_KEY;
+            console.log("apikey",apiKey)
             
             // 2. Use a template literal to insert the key into your fetch URL
             let data = await fetch(`https://gnews.io/api/v4/top-headlines?category=general&lang=en&country=us&max=10&apikey=${apiKey}`);
-
+            
             let res = await data.json();
             if(res.articles) {
                 setnews(res.articles);
