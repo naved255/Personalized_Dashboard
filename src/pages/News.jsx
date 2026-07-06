@@ -8,28 +8,30 @@ const News = () => {
 
     const [news, setnews] = useState([]);
     const [loading, setloading] = useState(true);
+
     async function fetchData() {
         try {
             setloading(true);
-            let data = await fetch('https://gnews.io/api/v4/top-headlines?category=general&lang=en&country=us&max=10&apikey=0100aa3f40d58bc8b1b28469630494cb');
+            
+            // 1. Read the API key securely from Vite's environment variables
+            const apiKey = import.meta.env.VITE_GNEWS_API_KEY;
+            
+            // 2. Use a template literal to insert the key into your fetch URL
+            let data = await fetch(`https://gnews.io/api/v4/top-headlines?category=general&lang=en&country=us&max=10&apikey=${apiKey}`);
 
             let res = await data.json();
             if(res.articles) {
-            setnews(res.articles);
+                setnews(res.articles);
             }
         } catch (error) {
             console.log(error);
         } finally {
             setloading(false);
         }
-
-
     }
 
     useEffect(() => {
-
         fetchData()
-
     }, []);
 
     useEffect(() => {
@@ -47,7 +49,6 @@ const News = () => {
             </div>
 
             <div className='flex gap-16 flex-wrap justify-center items-center'>
-
                 {
                     loading === true ? (
                         <div className="flex justify-center items-center min-h-[50vh]">
@@ -65,15 +66,14 @@ const News = () => {
                             </span>
                         </div>
                     ) : (
-                        news.length > 0 ? news.map(items => {
+                        news.length > 0 ? news.map((items, index) => {
                             return (
-                                <NewsCards key={items.id} content={`${items.content}`} description={`${items.description}`} image={`${items.image}`} title={items.title} />
+                                // Added a backup key using index in case items.id is missing/undefined from the API
+                                <NewsCards key={items.id || index} content={`${items.content}`} description={`${items.description}`} image={`${items.image}`} title={items.title} />
                             )
                         }) : <div>empty</div>)
                 }
-
             </div>
-
         </div>
     )
 }
